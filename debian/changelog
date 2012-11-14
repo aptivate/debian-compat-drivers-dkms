@@ -1,0 +1,5 @@
+compat-drivers-dkms (3.7-rc1-6) lucid; urgency=low
+
+  * Initial release. (Packaging https://backports.wiki.kernel.org/index.php/Documentation/compat-drivers)
+
+ -- Chris Wilson <chris+dkms@aptivate.org>  Tue, 13 Nov 2012 15:42:11 +0000

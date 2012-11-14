@@ -1,0 +1,54 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+DEB_NAME=compat-drivers-dkms
+NAME=compat-drivers-dkms
+VERSION=3.7-rc1-6~1~121113~1cw
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/simple-patchsys.mk
+
+DEB_DH_INSTALL_ARGS=--exclude=debian/
+SRC_VERSION := $(shell echo '$(VERSION)' | cut -d~ -f1)
+DKMS_CONF = $(CURDIR)/debian/$(cdbs_curpkg)/usr/src/$(NAME)-$(SRC_VERSION)/dkms.conf
+DEST_DIR = /usr/src/$(NAME)-$(SRC_VERSION)
+
+PARALLEL_JOBS = $(shell cat /proc/cpuinfo | grep "^processor" | wc -l)
+EXTRA_MAKEFLAGS += -j$(PARALLEL_JOBS)
+
+build:
+	dh_testdir
+	touch $@
+
+binary-install/$(NAME)::
+	# clean up in case the previous build was not completed
+	$(MAKE) $(EXTRA_MAKEFLAGS) -C compat-drivers clean
+
+	dh_install --exclude=.gitignore $(DEB_DH_INSTALL_ARGS) '*' $(DEST_DIR)
+
+	# Firmwares not in linux-firmware yet can be added to the system here.
+	# Maybe better to upgrade/patch linux-firmware instead? Not easy!
+	#dh_install $(DEB_DH_INSTALL_ARGS) firmware/rtlwifi/rtl8192cfwU_B.bin   /lib/firmware/rtlwifi
+	#dh_install $(DEB_DH_INSTALL_ARGS) firmware/rtlwifi/rtl8192cfwU.bin     /lib/firmware/rtlwifi
+	#dh_install $(DEB_DH_INSTALL_ARGS) firmware/rtlwifi/rtl8192defw_12.bin  /lib/firmware/rtlwifi
+	#dh_install $(DEB_DH_INSTALL_ARGS) firmware/rtlwifi/rtl8192sefw.old.bin /lib/firmware/rtlwifi
+	#dh_install $(DEB_DH_INSTALL_ARGS) firmware/rtlwifi/rtl8723fw.bin       /lib/firmware/rtlwifi
+
+	# dh_install debian/install.sh /usr/src/r8192ce-$(SRC_VERSION)
+	# dh_install debian/remove.sh  /usr/src/r8192ce-$(SRC_VERSION)
+
+	#cat dkms.conf.in \
+	#	| sed -e "s/#NAME#/$(NAME)/" \
+	#	| sed -e "s/#VERSION#/$(SRC_VERSION)/" \
+	#	> $(DKMS_CONF)
+
+	# Unfortunately we need to build the modules (on the .deb build
+	# host) to know what modules will be built (by DKMS on the target
+	# host) to generate the dkms.conf file to install them.
+
+	#$(MAKE) $(EXTRA_MAKEFLAGS) -C compat-drivers
+	#./debian/make-dkms-conf >> $(DKMS_CONF)
+	#$(MAKE) $(EXTRA_MAKEFLAGS) -C compat-drivers clean

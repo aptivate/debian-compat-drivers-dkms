@@ -1,0 +1,3 @@
+[submodule "compat-drivers"]
+	path = compat-drivers
+	url = git://github.com/mcgrof/compat-drivers.git

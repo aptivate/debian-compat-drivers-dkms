@@ -1,0 +1,11 @@
+PACKAGE_NAME='#NAME#'
+PACKAGE_VERSION='#VERSION#'
+
+# We don't want DKMS to modify our command line by adding
+# KERNELRELEASE=blah, because that breaks module building:
+# http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=553625
+# so we quote the 'make' command as suggested on that bug report.
+MAKE=" 'make' -C compat-drivers/ KLIB=/lib/modules/${kernelver}"
+CLEAN="'make' -C compat-drivers/ clean"
+
+AUTOINSTALL="yes"

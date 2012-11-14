@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cat dkms.conf.in
+
+cd compat-drivers
+let i=0
+
+find . -name "*.ko" | while read module; do
+	cat <<EOF
+BUILT_MODULE_NAME[$i]="$(basename $module .ko)"
+BUILT_MODULE_LOCATION[$i]="compat-drivers/$(dirname $module)"
+DEST_MODULE_LOCATION[$i]="/kernel/$(dirname $module)"
+EOF
+	let i++
+done

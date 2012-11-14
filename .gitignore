@@ -1,0 +1,5 @@
+debian/compat-drivers-dkms.debhelper.log
+debian/compat-drivers-dkms.substvars
+debian/compat-drivers-dkms/
+debian/files
+debian/stamp-patched
