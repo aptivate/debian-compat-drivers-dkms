@@ -40,15 +40,15 @@ binary-install/$(NAME)::
 	# dh_install debian/install.sh /usr/src/r8192ce-$(SRC_VERSION)
 	# dh_install debian/remove.sh  /usr/src/r8192ce-$(SRC_VERSION)
 
-	#cat dkms.conf.in \
-	#	| sed -e "s/#NAME#/$(NAME)/" \
-	#	| sed -e "s/#VERSION#/$(SRC_VERSION)/" \
-	#	> $(DKMS_CONF)
+	cat dkms.conf.in \
+		| sed -e "s/#NAME#/$(NAME)/" \
+		| sed -e "s/#VERSION#/$(SRC_VERSION)/" \
+		> $(DKMS_CONF)
 
 	# Unfortunately we need to build the modules (on the .deb build
 	# host) to know what modules will be built (by DKMS on the target
 	# host) to generate the dkms.conf file to install them.
 
-	#$(MAKE) $(EXTRA_MAKEFLAGS) -C compat-drivers
-	#./debian/make-dkms-conf >> $(DKMS_CONF)
-	#$(MAKE) $(EXTRA_MAKEFLAGS) -C compat-drivers clean
+	$(MAKE) $(EXTRA_MAKEFLAGS) -C compat-drivers
+	./debian/make-dkms-conf >> $(DKMS_CONF)
+	$(MAKE) $(EXTRA_MAKEFLAGS) -C compat-drivers clean
